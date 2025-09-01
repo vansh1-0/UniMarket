@@ -124,18 +124,31 @@ nav button:hover {
   background: #aaa;
   cursor: not-allowed;
 }
-main h2 {
-  color: #2d3e50;
-  margin-left: 2rem;
-  margin-top: 0;
-  font-size: 2rem;
-  font-weight: 700;
+
+main h2, h2, h3 {
+  color: #111 !important;
+}
+
+body, .app-container, div, p, a, span, label {
+  color: #222;
+}
+
+a {
+  color: #1a0dab;
+}
+a:visited {
+  color: #551a8b;
 }
 footer {
   text-align: center;
   padding: 1rem;
   background: #2d3e50;
-  color: #fff;
+  color: #fff !important;
   margin-top: 2rem;
   border-radius: 8px 8px 0 0;
+  box-shadow: 0 -2px 8px #0001;
+}
+
+footer p {
+  color: #fff !important;
 }
