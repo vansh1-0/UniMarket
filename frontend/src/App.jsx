@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 
 // Dummy data for listings
@@ -32,12 +33,16 @@ const dummyListings = [
   },
 ];
 
-function App() {
+
+function Home() {
+  return <div style={{ padding: "2rem" }}><h2>Welcome to UniMarket!</h2><p>Your campus marketplace for buying, selling, and trading items.</p></div>;
+}
+
+function Marketplace() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [sort, setSort] = useState("newest");
 
-  // Filter and sort logic
   let filteredListings = dummyListings.filter(
     (item) =>
       (category === "All" || item.category === category) &&
@@ -47,22 +52,11 @@ function App() {
   if (sort === "price") {
     filteredListings.sort((a, b) => a.price - b.price);
   } else {
-    filteredListings.sort((a, b) => b.id - a.id); // Newest first
+    filteredListings.sort((a, b) => b.id - a.id);
   }
 
   return (
-    <div className="app-container">
-      <header>
-        <h1>UniMarket</h1>
-        <nav>
-          <button>Home</button>
-          <button>Marketplace</button>
-          <button>My Listings</button>
-          <button>Profile</button>
-          <button>Login</button>
-        </nav>
-      </header>
-
+    <>
       <section className="search-bar">
         <input
           type="text"
@@ -101,11 +95,60 @@ function App() {
           ))}
         </div>
       </main>
+    </>
+  );
+}
 
-      <footer>
-        <p>© 2025 UniMarket | CampusTrade for Students</p>
-      </footer>
-    </div>
+function MyListings() {
+  return <div style={{ padding: "2rem" }}><h2>My Listings</h2><p>View, edit, or delete your listings here.</p></div>;
+}
+
+function Profile() {
+  return <div style={{ padding: "2rem" }}><h2>Profile</h2><p>View your profile and contact information.</p></div>;
+}
+
+function Login() {
+  return <div style={{ padding: "2rem" }}><h2>Login</h2><p>Sign in to your account.</p></div>;
+}
+
+function App() {
+  return (
+    <Router>
+      <div className="app-container">
+        <header>
+          <h1>UniMarket</h1>
+          <nav>
+            <Link to="/">
+              <button>Home</button>
+            </Link>
+            <Link to="/marketplace">
+              <button>Marketplace</button>
+            </Link>
+            <Link to="/my-listings">
+              <button>My Listings</button>
+            </Link>
+            <Link to="/profile">
+              <button>Profile</button>
+            </Link>
+            <Link to="/login">
+              <button>Login</button>
+            </Link>
+          </nav>
+        </header>
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/my-listings" element={<MyListings />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+
+        <footer>
+          <p>© 2025 UniMarket | CampusTrade for Students</p>
+        </footer>
+      </div>
+    </Router>
   );
 }
 
