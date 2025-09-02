@@ -43,7 +43,7 @@ Make sure you have the following installed on your machine:
     ```
 2.  **Install Backend Dependencies**
     ```sh
-    cd server
+    cd backend
     npm install
     ```
 3.  **Install Frontend Dependencies**
@@ -52,7 +52,7 @@ Make sure you have the following installed on your machine:
     npm install
     ```
 4.  **Set up Environment Variables**
-    Create a `.env` file in the `server` directory and add the following variables:
+    Create a `.env` file in the `backend` directory and add the following variables:
     ```
     PORT=5000
     MONGO_URI=your_mongodb_connection_string
@@ -65,7 +65,7 @@ Make sure you have the following installed on your machine:
 
 1.  **Start the Backend Server**
     ```sh
-    cd server
+    cd backend
     npm run dev
     ```
 2.  **Start the Frontend Development Server**
