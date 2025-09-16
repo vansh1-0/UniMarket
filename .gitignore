@@ -33,6 +33,7 @@ Thumbs.db
 
 # Dependencies
 /backend/node_modules
+node_modules/
 
 # Environment variables - VERY IMPORTANT
 # Contains sensitive data like database passwords and API keys
