@@ -32,7 +32,7 @@ header h1 {
   color: #1a2c42;
 }
 
-header nav a button {
+header nav button {
   background-color: #3a5a78;
   color: white;
   border: none;
@@ -44,12 +44,10 @@ header nav a button {
   transition: background-color 0.2s;
 }
 
-header nav a button:hover {
+header nav button:hover {
   background-color: #4f789e;
 }
 
-
-/* === FORM STYLES === */
 .form-container {
   max-width: 420px;
   margin: 3rem auto;
@@ -83,7 +81,6 @@ header nav a button:hover {
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box;
-  /* Ensures padding doesn't affect width */
   font-size: 1rem;
 }
 
@@ -116,21 +113,6 @@ header nav a button:hover {
   text-decoration: underline;
 }
 
-
-/* === FIX FOR BROWSER AUTOFILL STYLES === */
-/* This part overrides the default browser autofill colors (like light grey or blue) */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px white inset !important;
-  /* Keeps background white */
-  -webkit-text-fill-color: #333 !important;
-  /* Keeps text dark */
-}
-
-
-/* === FOOTER === */
 footer {
   text-align: center;
   padding: 1.5rem;

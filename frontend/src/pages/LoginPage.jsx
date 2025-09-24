@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 
-function LoginPage() {
+function LoginPage({ setUser }) {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -20,13 +20,14 @@ function LoginPage() {
         e.preventDefault();
         authService.login(formData)
             .then((response) => {
-                // Store user info and token in localStorage
-                localStorage.setItem('user', JSON.stringify(response.data));
+                const user = response.data;
+                localStorage.setItem('user', JSON.stringify(user));
+                setUser(user);
                 alert('Login successful!');
-                navigate('/marketplace'); // Redirect to marketplace on success
+                navigate('/marketplace');
             })
             .catch((error) => {
-                alert('Login failed: ' + error.response.data.msg);
+                console.log(error);
             });
     };
 
