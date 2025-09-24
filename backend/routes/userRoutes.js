@@ -26,20 +26,26 @@ router.post("/register", function (req, res, next) {
       bcrypt.hash(newUser.password, salt, function (err, hash) {
         if (err) throw err;
         newUser.password = hash;
-        newUser.save().then(function (user) {
-          jwt.sign(
-            { user: { id: user.id } },
-            process.env.JWT_SECRET,
-            { expiresIn: 3600 },
-            function (err, token) {
-              if (err) throw err;
-              res.json({
-                token: token,
-                user: { id: user.id, name: user.name, email: user.email },
-              });
-            }
-          );
-        });
+        newUser
+          .save()
+          .then(function (user) {
+            jwt.sign(
+              { user: { id: user.id } },
+              process.env.JWT_SECRET,
+              { expiresIn: 3600 },
+              function (err, token) {
+                if (err) throw err;
+                res.json({
+                  token: token,
+                  user: { id: user.id, name: user.name, email: user.email },
+                });
+              }
+            );
+          })
+          .catch(function (err) {
+            console.error("Error saving user to database:", err);
+            res.status(500).json({ msg: "Server error: Could not save user." });
+          });
       });
     });
   });

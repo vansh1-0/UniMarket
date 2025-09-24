@@ -1,154 +1,140 @@
-.app-container {
-  font-family: Arial, sans-serif;
-  background: #f7f7f7;
-  min-height: 100vh;
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #f4f7f9;
+  color: #333;
 }
 
+.app-container {
+  width: 100%;
+}
+
+main {
+  padding: 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+/* === HEADER & NAVIGATION === */
 header {
-  background: #2d3e50;
-  color: #fff;
+  background: #ffffff;
   padding: 1rem 2rem;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-header h1 {
-  margin: 0 0 0.5rem 0;
-  color: #fff;
-}
-nav button {
-  background: #fff;
-  color: #2d3e50;
-  border: none;
-  margin: 0 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-}
-nav button:hover {
-  background: #e0e0e0;
-}
-.search-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  background: #fff;
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px #0001;
-}
-.search-bar input,
-.search-bar select {
-  padding: 0.5rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  color: #222;
-  background: #fff;
-}
-.search-bar input::placeholder {
-  color: #444;
-}
-.listings-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
-  padding: 2rem;
-}
-.listing-card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px #0001;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  color: #222;
-}
-.listing-card img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 6px;
-  margin-bottom: 0.5rem;
-}
-.listing-card h3 {
-  margin: 0.5rem 0 0.2rem 0;
-  color: #2d3e50;
-}
-.listing-info {
-  display: flex;
   justify-content: space-between;
-  width: 100%;
-  margin: 0.5rem 0;
-  color: #222;
+  align-items: center;
+  border-bottom: 1px solid #dde4e9;
 }
-.category {
-  background: #e0e0e0;
-  border-radius: 4px;
-  padding: 0.2rem 0.5rem;
-  font-size: 0.9em;
-  color: #2d3e50;
+
+header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: #1a2c42;
 }
-.price {
-  color: #2d3e50;
-  font-weight: bold;
-}
-.sold-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #e74c3c;
-  color: #fff;
-  padding: 0.2rem 0.7rem;
-  border-radius: 4px;
-  font-size: 0.9em;
-}
-.listing-card.sold {
-  opacity: 0.6;
-}
-.listing-card button {
-  margin-top: 0.5rem;
-  padding: 0.4rem 1rem;
+
+header nav a button {
+  background-color: #3a5a78;
+  color: white;
   border: none;
-  border-radius: 4px;
-  background: #2d3e50;
-  color: #fff;
-  cursor: pointer;
+  padding: 0.6rem 1.2rem;
+  margin-left: 10px;
+  border-radius: 6px;
   font-weight: 600;
-}
-.listing-card button:disabled {
-  background: #aaa;
-  cursor: not-allowed;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-main h2, h2, h3 {
-  color: #111 !important;
+header nav a button:hover {
+  background-color: #4f789e;
 }
 
-body, .app-container, div, p, a, span, label {
-  color: #222;
+
+/* === FORM STYLES === */
+.form-container {
+  max-width: 420px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-a {
-  color: #1a0dab;
+.form-container h2 {
+  text-align: center;
+  color: #1a2c42;
+  margin-top: 0;
+  margin-bottom: 2rem;
 }
-a:visited {
-  color: #551a8b;
+
+.form-group {
+  margin-bottom: 1.25rem;
 }
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  /* Ensures padding doesn't affect width */
+  font-size: 1rem;
+}
+
+.form-btn {
+  width: 100%;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #3a5a78;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.form-btn:hover {
+  background-color: #4f789e;
+}
+
+.form-link {
+  display: block;
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.form-link:hover {
+  text-decoration: underline;
+}
+
+
+/* === FIX FOR BROWSER AUTOFILL STYLES === */
+/* This part overrides the default browser autofill colors (like light grey or blue) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  /* Keeps background white */
+  -webkit-text-fill-color: #333 !important;
+  /* Keeps text dark */
+}
+
+
+/* === FOOTER === */
 footer {
   text-align: center;
-  padding: 1rem;
-  background: #2d3e50;
-  color: #fff !important;
+  padding: 1.5rem;
   margin-top: 2rem;
-  border-radius: 8px 8px 0 0;
-  box-shadow: 0 -2px 8px #0001;
-}
-
-footer p {
-  color: #fff !important;
+  background-color: #1a2c42;
+  color: #eaf0f6;
 }
