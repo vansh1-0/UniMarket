@@ -29,15 +29,22 @@ app.use("/api/users", userRoutes);
 app.use("/api/listings", listingRoutes);
 
 app.use(function (req, res, next) {
-  next(createError(404));
+  res.status(404).json({
+    message: "Route not found",
+  });
 });
 
 app.use(function (err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
-
   res.status(err.status || 500);
-  res.render("error");
+  res.json({
+    message: err.message,
+    // Provide stack trace only in development
+    error: req.app.get("env") === "development" ? err.stack : {},
+  });
+});
+
+app.get("/", function (req, res) {
+  res.send("UniMarket API is running successfully!");
 });
 
 console.log("\n\nServer started on http://localhost:5000\n\n");
