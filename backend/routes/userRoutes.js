@@ -4,27 +4,39 @@ var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 var User = require("../models/user.js");
 
+function protect(req, res, next) {
+  var token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    try {
+      token = req.headers.authorization.split(" ")[1];
+      var decoded = jwt.verify(token, process.env.JWT_SECRET);
+      User.findById(decoded.user.id)
+        .select("-password")
+        .then(function (user) {
+          req.user = user;
+          next();
+        })
+        .catch(function (err) {
+          res.status(401).json({ msg: "Not authorized" });
+        });
+    } catch (error) {
+      res.status(401).json({ msg: "Not authorized, token failed" });
+    }
+  }
+  if (!token) {
+    res.status(401).json({ msg: "Not authorized, no token" });
+  }
+}
+
 router.post("/register", function (req, res, next) {
   var { name, email, password } = req.body;
 
-  // --- Start: Updated Validation Block ---
   if (!name || !email || !password) {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
-
-  if (password.length < 6) {
-    return res
-      .status(400)
-      .json({ msg: "Password must be at least 6 characters long" });
-  }
-
-  if (!email.endsWith(".edu.in")) {
-    return res
-      .status(400)
-      .json({ msg: "Please use a valid university email ending in .edu.in" });
-  }
-  // --- End: Updated Validation Block ---
-
   User.findOne({ email: email }).then(function (user) {
     if (user) {
       return res.status(400).json({ msg: "User already exists" });
@@ -40,26 +52,20 @@ router.post("/register", function (req, res, next) {
       bcrypt.hash(newUser.password, salt, function (err, hash) {
         if (err) throw err;
         newUser.password = hash;
-        newUser
-          .save()
-          .then(function (user) {
-            jwt.sign(
-              { user: { id: user.id } },
-              process.env.JWT_SECRET,
-              { expiresIn: 3600 },
-              function (err, token) {
-                if (err) throw err;
-                res.json({
-                  token: token,
-                  user: { id: user.id, name: user.name, email: user.email },
-                });
-              }
-            );
-          })
-          .catch(function (err) {
-            console.error("Error saving user:", err);
-            res.status(500).json({ msg: "Server error during user save." });
-          });
+        newUser.save().then(function (user) {
+          jwt.sign(
+            { user: { id: user.id } },
+            process.env.JWT_SECRET,
+            { expiresIn: 3600 },
+            function (err, token) {
+              if (err) throw err;
+              res.json({
+                token: token,
+                user: { id: user.id, name: user.name, email: user.email },
+              });
+            }
+          );
+        });
       });
     });
   });
@@ -96,6 +102,36 @@ router.post("/login", function (req, res, next) {
       );
     });
   });
+});
+
+router.put("/profile", protect, function (req, res, next) {
+  User.findById(req.user.id)
+    .then(function (user) {
+      if (user) {
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+
+        user
+          .save()
+          .then(function (updatedUser) {
+            res.json({
+              id: updatedUser.id,
+              name: updatedUser.name,
+              email: updatedUser.email,
+            });
+          })
+          .catch(function (err) {
+            res
+              .status(400)
+              .json({ msg: "Update failed. Email might already be in use." });
+          });
+      } else {
+        res.status(404).json({ msg: "User not found" });
+      }
+    })
+    .catch(function (err) {
+      res.status(500).send("Server Error");
+    });
 });
 
 module.exports = router;
