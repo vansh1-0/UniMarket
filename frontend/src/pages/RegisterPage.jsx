@@ -19,6 +19,28 @@ function RegisterPage() {
 
     const onSubmit = (e) => {
         e.preventDefault();
+
+        if (!name) {
+            alert('Please fill out your name');
+            return;
+        }
+        if (!email) {
+            alert('Please fill out your email.');
+            return;
+        }
+        if (!password) {
+            alert('Please fill out password.');
+            return;
+        }
+        if (password.length < 6) {
+            alert('Password must be at least 6 characters long.');
+            return;
+        }
+        if (!email.endsWith('.edu.in')) {
+            alert('Please use a valid university email ending in .edu.in');
+            return;
+        }
+
         authService.register(formData)
             .then((response) => {
                 alert('Registration successful! Please log in.');

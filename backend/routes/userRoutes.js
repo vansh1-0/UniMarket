@@ -7,9 +7,23 @@ var User = require("../models/user.js");
 router.post("/register", function (req, res, next) {
   var { name, email, password } = req.body;
 
+  // --- Start: Updated Validation Block ---
   if (!name || !email || !password) {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
+
+  if (password.length < 6) {
+    return res
+      .status(400)
+      .json({ msg: "Password must be at least 6 characters long" });
+  }
+
+  if (!email.endsWith(".edu.in")) {
+    return res
+      .status(400)
+      .json({ msg: "Please use a valid university email ending in .edu.in" });
+  }
+  // --- End: Updated Validation Block ---
 
   User.findOne({ email: email }).then(function (user) {
     if (user) {
@@ -43,8 +57,8 @@ router.post("/register", function (req, res, next) {
             );
           })
           .catch(function (err) {
-            console.error("Error saving user to database:", err);
-            res.status(500).json({ msg: "Server error: Could not save user." });
+            console.error("Error saving user:", err);
+            res.status(500).json({ msg: "Server error during user save." });
           });
       });
     });
