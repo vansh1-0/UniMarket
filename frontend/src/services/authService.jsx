@@ -19,10 +19,21 @@ const updateProfile = (userData, token) => {
     return axios.put(API_URL + 'profile', userData, config);
 };
 
+const deleteProfile = (token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+    return axios.delete(API_URL + 'profile', config);
+};
+
+
 const authService = {
     register,
     login,
     updateProfile,
+    deleteProfile,
 };
 
 export default authService;

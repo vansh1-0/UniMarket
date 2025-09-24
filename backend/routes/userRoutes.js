@@ -134,4 +134,18 @@ router.put("/profile", protect, function (req, res, next) {
     });
 });
 
+router.delete("/profile", protect, function (req, res, next) {
+  User.findByIdAndDelete(req.user.id)
+    .then(function (user) {
+      if (!user) {
+        return res.status(404).json({ msg: "User not found" });
+      }
+      // Optional: Add logic here to delete the user's listings as well
+      res.json({ msg: "User account deleted successfully" });
+    })
+    .catch(function (err) {
+      res.status(500).send("Server Error");
+    });
+});
+
 module.exports = router;

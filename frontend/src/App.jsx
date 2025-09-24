@@ -59,7 +59,7 @@ function App() {
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/login" element={<LoginPage setUser={setUser} />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile" element={<ProfilePage handleLogout={handleLogout} />} />
       </Routes>
 
       <footer>
