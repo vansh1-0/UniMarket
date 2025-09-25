@@ -3,6 +3,7 @@ var router = express.Router();
 var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 var User = require("../models/user.js");
+var Listing = require("../models/listing.js");
 
 // Middleware to protect routes
 function protect(req, res, next) {
@@ -153,6 +154,61 @@ router.delete("/profile", protect, function (req, res, next) {
     .catch(function (err) {
       res.status(500).send("Server Error");
     });
+});
+
+// Add to wishlist
+router.post('/wishlist/:listingId', protect, async (req, res) => {
+    try {
+        const listing = await Listing.findById(req.params.listingId);
+        if (!listing) {
+            return res.status(404).json({ msg: 'Listing not found' });
+        }
+
+        if (listing.user.toString() === req.user.id) {
+            return res.status(400).json({ msg: 'You cannot add your own listing to your wishlist' });
+        }
+
+        const user = await User.findById(req.user.id);
+        if (user.wishlist.includes(req.params.listingId)) {
+            return res.status(400).json({ msg: 'Listing already in wishlist' });
+        }
+
+        user.wishlist.push(req.params.listingId);
+        await user.save();
+        res.json(user.wishlist);
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
+// Remove from wishlist
+router.delete('/wishlist/:listingId', protect, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        user.wishlist = user.wishlist.filter(
+            (listingId) => listingId.toString() !== req.params.listingId
+        );
+        await user.save();
+        res.json(user.wishlist);
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
+});
+
+// Get wishlist
+router.get('/wishlist', protect, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).populate({
+            path: 'wishlist',
+            populate: {
+                path: 'user',
+                select: 'name email phone'
+            }
+        });
+        res.json(user.wishlist);
+    } catch (err) {
+        res.status(500).send('Server Error');
+    }
 });
 
 module.exports = router;
