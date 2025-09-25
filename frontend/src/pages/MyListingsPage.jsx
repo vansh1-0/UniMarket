@@ -27,6 +27,21 @@ function MyListingsPage() {
             });
     }, [navigate]);
 
+    const handleDelete = (listingId) => {
+        if (window.confirm('Are you sure you want to delete this listing?')) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            listingService.deleteListing(listingId, user.token)
+                .then(() => {
+                    setListings(listings.filter(listing => listing._id !== listingId));
+                    alert('Listing deleted successfully.');
+                })
+                .catch(error => {
+                    alert('Failed to delete listing.');
+                    console.error(error);
+                });
+        }
+    };
+
     if (loading) {
         return <p>Loading your listings...</p>;
     }
@@ -37,7 +52,12 @@ function MyListingsPage() {
             <div className="listings-grid">
                 {listings.length > 0 ? (
                     listings.map(listing => (
-                        <ListingItem key={listing._id} listing={listing} />
+                        <ListingItem 
+                            key={listing._id} 
+                            listing={listing} 
+                            showDeleteButton={true} 
+                            onDelete={() => handleDelete(listing._id)}
+                        />
                     ))
                 ) : (
                     <p>You have not posted any listings yet.</p>

@@ -36,35 +36,42 @@ function MarketplacePage() {
     }
 
     return (
-        <main>
-            <h2>Marketplace</h2>
-
-            <form onSubmit={handleSearch} className="search-and-filter-bar">
-                <input
-                    type="text"
-                    placeholder="Search for items..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                    <option value="All">All Categories</option>
-                    <option value="Textbooks">Textbooks</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Furniture">Furniture</option>
-                </select>
-                <button type="submit" className="form-btn">Search</button>
-            </form>
-
-            <div className="listings-grid">
-                {listings.length > 0 ? (
-                    listings.map(listing => (
-                        <ListingItem key={listing._id} listing={listing} />
-                    ))
-                ) : (
-                    <p>No listings found for your search.</p>
-                )}
+        <>
+            <div className="welcome-header">
+                <h1>Welcome to UniMarket!</h1>
+                <p>Your one-stop campus marketplace.</p>
             </div>
-        </main>
+
+            <main>
+                <h2>Marketplace</h2>
+
+                <form onSubmit={handleSearch} className="search-and-filter-bar">
+                    <input
+                        type="text"
+                        placeholder="Search for items..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                        <option value="All">All Categories</option>
+                        <option value="Textbooks">Textbooks</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Furniture">Furniture</option>
+                    </select>
+                    <button type="submit" className="form-btn">Search</button>
+                </form>
+
+                <div className="listings-grid">
+                    {listings.length > 0 ? (
+                        listings.map(listing => (
+                            <ListingItem key={listing._id} listing={listing} />
+                        ))
+                    ) : (
+                        <p>No listings found for your search.</p>
+                    )}
+                </div>
+            </main>
+        </>
     );
 }
 

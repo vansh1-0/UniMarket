@@ -1,8 +1,7 @@
 import React from 'react';
 import './ListingItem.css';
 
-function ListingItem({ listing }) {
-    // Construct the full image URL by prepending the backend server's address
+function ListingItem({ listing, showDeleteButton, onDelete }) {
     const imageUrl = `http://localhost:5000${listing.image}`;
 
     return (
@@ -11,7 +10,6 @@ function ListingItem({ listing }) {
                 src={imageUrl} 
                 alt={listing.title} 
                 className="listing-image" 
-                // Add a fallback for broken images
                 onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/250?text=No+Image"; }}
             />
             <div className="listing-details">
@@ -19,6 +17,12 @@ function ListingItem({ listing }) {
                 <p className="listing-price">₹{listing.price}</p>
                 <p className="listing-category">{listing.category}</p>
                 <p className="listing-seller">Sold by: {listing.user.name}</p>
+                
+                {showDeleteButton && (
+                    <button onClick={onDelete} className="delete-button">
+                        Delete
+                    </button>
+                )}
             </div>
         </div>
     );

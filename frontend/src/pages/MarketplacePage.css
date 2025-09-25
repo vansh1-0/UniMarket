@@ -1,3 +1,25 @@
+.welcome-header {
+    text-align: center;
+    padding: 2rem 1rem;
+    background-color: #eaf0f6; /* A light blue-grey background */
+}
+
+.welcome-header h1 {
+    margin: 0;
+    color: #1a2c42;
+}
+
+.welcome-header p {
+    margin: 0.5rem 0 0;
+    font-size: 1.1rem;
+    color: #3a5a78;
+}
+
+/* --- ADD THIS NEW RULE --- */
+main h2 {
+    text-align: center;
+}
+
 .search-and-filter-bar {
     display: flex;
     gap: 1rem;
@@ -15,6 +37,15 @@
     border-radius: 5px;
     border: 1px solid #ccc;
     font-size: 1rem;
+}
+
+.search-and-filter-bar input[type="text"] {
+    flex-grow: 1;
+}
+
+.search-and-filter-bar .form-btn {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
 }
 
 .listings-grid {
