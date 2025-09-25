@@ -17,6 +17,7 @@ function ListingItem({ listing, showDeleteButton, showEditButton, onDelete, onEd
                 <p className="listing-price">₹{listing.price}</p>
                 <p className="listing-category">{listing.category}</p>
                 <p className="listing-seller">Sold by: {listing.user.name}</p>
+                <p className="listing-seller">Contact: {listing.user.phone}</p>
                 
                 {showEditButton && (
                     <button onClick={onEdit} className="edit-button">
