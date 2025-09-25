@@ -1,9 +1,11 @@
 var express = require("express");
 var router = express.Router();
 var jwt = require("jsonwebtoken");
+var path = require("path");
 var Listing = require("../models/listing.js");
 var User = require("../models/user.js");
 
+// Middleware to protect routes that require authentication
 function protect(req, res, next) {
   var token;
   if (
@@ -31,9 +33,22 @@ function protect(req, res, next) {
   }
 }
 
+// GET all listings with search and filter functionality
 router.get("/", function (req, res, next) {
-  Listing.find({})
+  const { search, category } = req.query;
+  let query = {};
+
+  if (search) {
+    query.title = { $regex: search, $options: "i" };
+  }
+
+  if (category && category !== "All") {
+    query.category = category;
+  }
+
+  Listing.find(query)
     .populate("user", "name email")
+    .sort({ createdAt: -1 })
     .then(function (listings) {
       res.json(listings);
     })
@@ -42,26 +57,46 @@ router.get("/", function (req, res, next) {
     });
 });
 
+// POST a new listing with an image using express-fileupload
 router.post("/", protect, function (req, res, next) {
-  var { title, description, price, category } = req.body;
-  var newListing = new Listing({
-    title: title,
-    description: description,
-    price: price,
-    category: category,
-    user: req.user.id,
-  });
+  const { title, description, price, category } = req.body;
 
-  newListing
-    .save()
-    .then(function (listing) {
-      res.json(listing);
-    })
-    .catch(function (err) {
-      res.status(500).send("Server Error");
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).json({ msg: 'No image was uploaded.' });
+  }
+
+  const imageFile = req.files.image;
+  const fileName = Date.now() + path.extname(imageFile.name);
+  const uploadPath = path.join(__dirname, '..', 'public', 'images', fileName);
+
+  // Move the file to the public/images folder
+  imageFile.mv(uploadPath, function (err) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+
+    // Create a new listing with the image path
+    const newListing = new Listing({
+      title,
+      description,
+      price,
+      category,
+      image: '/images/' + fileName,
+      user: req.user.id,
     });
+
+    newListing
+      .save()
+      .then(function (listing) {
+        res.status(201).json(listing);
+      })
+      .catch(function (err) {
+        res.status(500).send("Server Error");
+      });
+  });
 });
 
+// PUT (update) a listing by its ID
 router.put("/:id", protect, function (req, res, next) {
   Listing.findById(req.params.id)
     .then(function (listing) {
@@ -84,6 +119,7 @@ router.put("/:id", protect, function (req, res, next) {
     });
 });
 
+// DELETE a listing by its ID
 router.delete("/:id", protect, function (req, res, next) {
   Listing.findById(req.params.id)
     .then(function (listing) {
@@ -108,3 +144,4 @@ router.delete("/:id", protect, function (req, res, next) {
 });
 
 module.exports = router;
+
