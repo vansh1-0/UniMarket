@@ -27,6 +27,10 @@ function MyListingsPage() {
             });
     }, [navigate]);
 
+    const handleEdit = (listingId) => {
+        navigate(`/edit-listing/${listingId}`);
+    };
+
     const handleDelete = (listingId) => {
         if (window.confirm('Are you sure you want to delete this listing?')) {
             const user = JSON.parse(localStorage.getItem('user'));
@@ -56,7 +60,9 @@ function MyListingsPage() {
                             key={listing._id} 
                             listing={listing} 
                             showDeleteButton={true} 
+                            showEditButton={true}
                             onDelete={() => handleDelete(listing._id)}
+                            onEdit={() => handleEdit(listing._id)}
                         />
                     ))
                 ) : (

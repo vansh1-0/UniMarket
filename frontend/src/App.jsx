@@ -8,6 +8,7 @@ import ProfilePage from './pages/ProfilePage';
 import MarketplacePage from './pages/MarketplacePage';
 import CreateListingPage from './pages/CreateListingPage';
 import MyListingsPage from './pages/MyListingsPage';
+import EditListingPage from './pages/EditListingPage'; // Import the new page
 
 function App() {
   const [user, setUser] = useState(null);
@@ -58,6 +59,7 @@ function App() {
           <Route path="/create-listing" element={<CreateListingPage />} />
           <Route path="/profile" element={<ProfilePage handleLogout={handleLogout} />} />
           <Route path="/my-listings" element={<MyListingsPage />} />
+          <Route path="/edit-listing/:id" element={<EditListingPage />} />
         </Routes>
       </main>
 
