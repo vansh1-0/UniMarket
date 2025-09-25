@@ -7,6 +7,7 @@ function LoginPage({ setUser }) {
         email: '',
         password: '',
     });
+    const [loading, setLoading] = useState(false); // Add loading state
 
     const navigate = useNavigate();
 
@@ -18,16 +19,28 @@ function LoginPage({ setUser }) {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        setLoading(true); // Set loading to true when form is submitted
+        
         authService.login(formData)
             .then((response) => {
                 const user = response.data;
                 localStorage.setItem('user', JSON.stringify(user));
                 setUser(user);
                 alert('Login successful!');
-                navigate('/marketplace');
+                navigate('/');
             })
             .catch((error) => {
-                console.log(error);
+                // Get the error message from the server response, or show a generic message
+                const message =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.msg) ||
+                    'Login failed. Please check your credentials and try again.';
+                
+                alert(message); // Show error message to the user
+            })
+            .finally(() => {
+                setLoading(false); // Set loading back to false after request is complete
             });
     };
 
@@ -57,7 +70,10 @@ function LoginPage({ setUser }) {
                         required
                     />
                 </div>
-                <button type="submit" className="form-btn">Login</button>
+                {/* Disable button while loading */}
+                <button type="submit" className="form-btn" disabled={loading}>
+                    {loading ? 'Logging in...' : 'Login'}
+                </button>
                 <Link to="/register" className="form-link">
                     Don't have an account? Register
                 </Link>

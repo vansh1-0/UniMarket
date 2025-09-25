@@ -4,6 +4,7 @@ var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 var User = require("../models/user.js");
 
+// Middleware to protect routes
 function protect(req, res, next) {
   var token;
   if (
@@ -31,10 +32,11 @@ function protect(req, res, next) {
   }
 }
 
+// Register a new user
 router.post("/register", function (req, res, next) {
-  var { name, email, password } = req.body;
+  var { name, email, password, phone } = req.body;
 
-  if (!name || !email || !password) {
+  if (!name || !email || !password || !phone) {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
   User.findOne({ email: email }).then(function (user) {
@@ -46,6 +48,7 @@ router.post("/register", function (req, res, next) {
       name: name,
       email: email,
       password: password,
+      phone: phone, // Add phone number here
     });
 
     bcrypt.genSalt(10, function (err, salt) {
@@ -61,7 +64,7 @@ router.post("/register", function (req, res, next) {
               if (err) throw err;
               res.json({
                 token: token,
-                user: { id: user.id, name: user.name, email: user.email },
+                user: { id: user.id, name: user.name, email: user.email, phone: user.phone },
               });
             }
           );
@@ -71,6 +74,7 @@ router.post("/register", function (req, res, next) {
   });
 });
 
+// Login user
 router.post("/login", function (req, res, next) {
   var { email, password } = req.body;
 
@@ -96,7 +100,7 @@ router.post("/login", function (req, res, next) {
           if (err) throw err;
           res.json({
             token: token,
-            user: { id: user.id, name: user.name, email: user.email },
+            user: { id: user.id, name: user.name, email: user.email, phone: user.phone },
           });
         }
       );
@@ -104,12 +108,14 @@ router.post("/login", function (req, res, next) {
   });
 });
 
+// Update user profile
 router.put("/profile", protect, function (req, res, next) {
   User.findById(req.user.id)
     .then(function (user) {
       if (user) {
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
+        user.phone = req.body.phone || user.phone; // Allow phone update
 
         user
           .save()
@@ -118,6 +124,7 @@ router.put("/profile", protect, function (req, res, next) {
               id: updatedUser.id,
               name: updatedUser.name,
               email: updatedUser.email,
+              phone: updatedUser.phone,
             });
           })
           .catch(function (err) {
@@ -134,13 +141,13 @@ router.put("/profile", protect, function (req, res, next) {
     });
 });
 
+// Delete user profile
 router.delete("/profile", protect, function (req, res, next) {
   User.findByIdAndDelete(req.user.id)
     .then(function (user) {
       if (!user) {
         return res.status(404).json({ msg: "User not found" });
       }
-      // Optional: Add logic here to delete the user's listings as well
       res.json({ msg: "User account deleted successfully" });
     })
     .catch(function (err) {
