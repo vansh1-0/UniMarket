@@ -5,13 +5,10 @@ import './App.css';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import MarketplacePage from './pages/MarketplacePage';
 
 function Home() {
   return <div style={{ padding: '2rem' }}><h2>Welcome to UniMarket!</h2></div>;
-}
-
-function Marketplace() {
-  return <div style={{ padding: '2rem' }}><h2>Marketplace</h2></div>;
 }
 
 function App() {
@@ -56,7 +53,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/marketplace" element={<Marketplace />} />
+        <Route path="/marketplace" element={<MarketplacePage />} /> 
         <Route path="/login" element={<LoginPage setUser={setUser} />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile" element={<ProfilePage handleLogout={handleLogout} />} />
