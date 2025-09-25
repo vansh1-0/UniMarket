@@ -19,10 +19,6 @@ const listingRoutes = require("./routes/listingRoutes");
 
 var app = express();
 
-// View engine setup (optional, can be removed if not using server-side templates)
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
-
 // --- Middleware Configuration ---
 app.use(logger("dev")); // Morgan for logging requests
 app.use(express.json()); // To parse JSON bodies

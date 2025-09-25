@@ -1,9 +1,8 @@
-// src/pages/ProfilePage.jsx
 import React, { useState, useEffect } from 'react';
 import authService from '../services/authService';
 
-function ProfilePage({ handleLogout }) { // <-- Accept handleLogout as a prop
-    const [formData, setFormData] = useState({ name: '', email: '' });
+function ProfilePage({ handleLogout }) {
+    const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -13,11 +12,12 @@ function ProfilePage({ handleLogout }) { // <-- Accept handleLogout as a prop
             setFormData({
                 name: storedUser.user.name,
                 email: storedUser.user.email,
+                phone: storedUser.user.phone || '', // Set phone from stored user
             });
         }
     }, []);
 
-    const { name, email } = formData;
+    const { name, email, phone } = formData;
 
     const onChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,13 +28,14 @@ function ProfilePage({ handleLogout }) { // <-- Accept handleLogout as a prop
         if (user && user.token) {
             authService.updateProfile(formData, user.token)
                 .then((response) => {
-                    const updatedUser = { ...user, user: response.data };
-                    localStorage.setItem('user', JSON.stringify(updatedUser));
-                    setUser(updatedUser);
+                    const updatedUserData = { ...user, user: response.data };
+                    localStorage.setItem('user', JSON.stringify(updatedUserData));
+                    setUser(updatedUserData);
                     alert('Profile updated successfully!');
                 })
                 .catch((error) => {
-                    alert('Update failed: ' + error.response.data.msg);
+                    const message = (error.response && error.response.data && error.response.data.msg) || 'Update failed.';
+                    alert(message);
                 });
         }
     };
@@ -45,7 +46,7 @@ function ProfilePage({ handleLogout }) { // <-- Accept handleLogout as a prop
                 authService.deleteProfile(user.token)
                     .then(() => {
                         alert('Account deleted successfully.');
-                        handleLogout(); // Log the user out
+                        handleLogout();
                     })
                     .catch((error) => {
                         alert('Failed to delete account: ' + error.response.data.msg);
@@ -65,6 +66,10 @@ function ProfilePage({ handleLogout }) { // <-- Accept handleLogout as a prop
                 <div className="form-group">
                     <label htmlFor="email">University Email</label>
                     <input type="email" id="email" name="email" value={email} onChange={onChange} required />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" value={phone} onChange={onChange} required />
                 </div>
                 <button type="submit" className="form-btn">Update Profile</button>
             </form>

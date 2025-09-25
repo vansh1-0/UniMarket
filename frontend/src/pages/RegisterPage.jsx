@@ -7,11 +7,12 @@ function RegisterPage() {
         name: '',
         email: '',
         password: '',
+        phone: '', // Add phone state
     });
 
     const navigate = useNavigate();
 
-    const { name, email, password } = formData;
+    const { name, email, password, phone } = formData;
 
     const onChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,16 +21,9 @@ function RegisterPage() {
     const onSubmit = (e) => {
         e.preventDefault();
 
-        if (!name) {
-            alert('Please fill out your name');
-            return;
-        }
-        if (!email) {
-            alert('Please fill out your email.');
-            return;
-        }
-        if (!password) {
-            alert('Please fill out password.');
+        // Basic validation
+        if (!name || !email || !password || !phone) {
+            alert('Please fill out all fields.');
             return;
         }
         if (password.length < 6) {
@@ -47,7 +41,8 @@ function RegisterPage() {
                 navigate('/login');
             })
             .catch((error) => {
-                alert('Registration failed: ' + error.response.data.msg);
+                const message = (error.response && error.response.data && error.response.data.msg) || 'Registration failed.';
+                alert(message);
             });
     };
 
@@ -57,40 +52,21 @@ function RegisterPage() {
             <form onSubmit={onSubmit}>
                 <div className="form-group">
                     <label htmlFor="name">Full Name</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={name}
-                        onChange={onChange}
-                        required
-                    />
+                    <input type="text" id="name" name="name" value={name} onChange={onChange} required />
                 </div>
                 <div className="form-group">
                     <label htmlFor="email">University Email (.edu.in)</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={email}
-                        onChange={onChange}
-                        required
-                    />
+                    <input type="email" id="email" name="email" value={email} onChange={onChange} required />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" value={phone} onChange={onChange} required />
                 </div>
                 <div className="form-group">
                     <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={password}
-                        onChange={onChange}
-                        required
-                    />
+                    <input type="password" id="password" name="password" value={password} onChange={onChange} required />
                 </div>
-                <button type="submit" className="form-btn">
-                    Register
-                </button>
+                <button type="submit" className="form-btn">Register</button>
                 <Link to="/login" className="form-link">
                     Already have an account? Login
                 </Link>

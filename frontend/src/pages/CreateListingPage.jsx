@@ -51,7 +51,7 @@ function CreateListingPage() {
         listingService.createListing(listingData, user.token)
             .then(() => {
                 alert('Listing created successfully!');
-                navigate('/marketplace');
+                navigate('/my-listings');
             })
             .catch((error) => {
                 const errorMessage = error.response?.data?.msg || 'An unknown error occurred.';
@@ -69,12 +69,21 @@ function CreateListingPage() {
                 </div>
                 <div className="form-group">
                     <label htmlFor="description">Description</label>
-                    <textarea id="description" name="description" value={description} onChange={onChange} rows="4" required />
+                    <input type="text" id="description" name="description" value={description} onChange={onChange} required />
                 </div>
                 <div className="form-group">
                     <label htmlFor="price">Price (₹)</label>
-                    <input type="number" id="price" name="price" value={price} onChange={onChange} required />
+                    <input 
+                        type="number" 
+                        id="price" 
+                        name="price" 
+                        value={price} 
+                        onChange={onChange} 
+                        min="1" 
+                        required 
+                    />
                 </div>
+
                 <div className="form-group">
                     <label htmlFor="category">Category</label>
                     <select id="category" name="category" value={category} onChange={onChange}>
@@ -85,8 +94,15 @@ function CreateListingPage() {
                     </select>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="image">Product Image</label>
-                    <input type="file" id="image" name="image" accept="image/*" onChange={onFileChange} required />
+                    <label htmlFor="image">Product Image (JPG, JPEG, PNG only)</label>
+                    <input 
+                        type="file" 
+                        id="image" 
+                        name="image" 
+                        accept=".jpg,.jpeg,.png" 
+                        onChange={onFileChange} 
+                        required 
+                    />
                 </div>
                 <button type="submit" className="form-btn">Create Listing</button>
             </form>
