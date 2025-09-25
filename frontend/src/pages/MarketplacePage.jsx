@@ -23,7 +23,12 @@ function MarketplacePage() {
         setLoading(true);
         listingService.getListings(search, category)
             .then(response => {
-                setListings(response.data);
+                let fetchedListings = response.data;
+                // If a user is logged in, filter out their own listings
+                if (user && user.user) {
+                    fetchedListings = fetchedListings.filter(listing => listing.user._id !== user.user.id);
+                }
+                setListings(fetchedListings);
                 setLoading(false);
             })
             .catch(error => {
