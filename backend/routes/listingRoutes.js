@@ -31,8 +31,21 @@ function protect(req, res, next) {
   }
 }
 
+// GET all listings with search and filter
 router.get("/", function (req, res, next) {
-  Listing.find({})
+  const { search, category } = req.query;
+  let query = {};
+
+  if (search) {
+    // Case-insensitive search on the title field
+    query.title = { $regex: search, $options: "i" };
+  }
+
+  if (category && category !== "All") {
+    query.category = category;
+  }
+
+  Listing.find(query)
     .populate("user", "name email")
     .then(function (listings) {
       res.json(listings);
@@ -42,6 +55,7 @@ router.get("/", function (req, res, next) {
     });
 });
 
+// POST a new listing
 router.post("/", protect, function (req, res, next) {
   var { title, description, price, category } = req.body;
   var newListing = new Listing({
@@ -62,6 +76,7 @@ router.post("/", protect, function (req, res, next) {
     });
 });
 
+// PUT (update) a listing
 router.put("/:id", protect, function (req, res, next) {
   Listing.findById(req.params.id)
     .then(function (listing) {
@@ -84,6 +99,7 @@ router.put("/:id", protect, function (req, res, next) {
     });
 });
 
+// DELETE a listing
 router.delete("/:id", protect, function (req, res, next) {
   Listing.findById(req.params.id)
     .then(function (listing) {
