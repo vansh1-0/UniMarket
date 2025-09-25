@@ -7,10 +7,7 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import MarketplacePage from './pages/MarketplacePage';
 import CreateListingPage from './pages/CreateListingPage';
-
-function Home() {
-  return <div style={{ padding: '2rem', textAlign: 'center' }}><h2>Welcome to UniMarket! Your one-stop campus marketplace.</h2></div>;
-}
+import MyListingsPage from './pages/MyListingsPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -36,10 +33,10 @@ function App() {
         <h1>UniMarket</h1>
         <nav>
           <Link to="/"><button>Home</button></Link>
-          <Link to="/marketplace"><button>Marketplace</button></Link>
 
           {user ? (
             <>
+              <Link to="/my-listings"><button>My Listings</button></Link>
               <Link to="/create-listing"><button>+ New Listing</button></Link>
               <Link to="/profile"><button>Profile</button></Link>
               <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
@@ -53,15 +50,14 @@ function App() {
         </nav>
       </header>
 
-      {/* This <main> tag is crucial for the layout */}
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/marketplace" element={<MarketplacePage />} />
+          <Route path="/" element={<MarketplacePage />} />
           <Route path="/login" element={<LoginPage setUser={setUser} />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/create-listing" element={<CreateListingPage />} />
           <Route path="/profile" element={<ProfilePage handleLogout={handleLogout} />} />
+          <Route path="/my-listings" element={<MyListingsPage />} />
         </Routes>
       </main>
 
@@ -72,7 +68,6 @@ function App() {
   );
 }
 
-// Wrapper component to provide Router context to the App component
 function AppWrapper() {
   return (
     <Router>
