@@ -1,7 +1,7 @@
 import React from 'react';
 import './ListingItem.css';
 
-function ListingItem({ listing, showDeleteButton, onDelete }) {
+function ListingItem({ listing, showDeleteButton, showEditButton, onDelete, onEdit }) {
     const imageUrl = `http://localhost:5000${listing.image}`;
 
     return (
@@ -18,6 +18,11 @@ function ListingItem({ listing, showDeleteButton, onDelete }) {
                 <p className="listing-category">{listing.category}</p>
                 <p className="listing-seller">Sold by: {listing.user.name}</p>
                 
+                {showEditButton && (
+                    <button onClick={onEdit} className="edit-button">
+                        Edit
+                    </button>
+                )}
                 {showDeleteButton && (
                     <button onClick={onDelete} className="delete-button">
                         Delete

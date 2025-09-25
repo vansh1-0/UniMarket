@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var jwt = require("jsonwebtoken");
 var path = require("path");
+var fs = require("fs"); // Import the File System module
 var Listing = require("../models/listing.js");
 var User = require("../models/user.js");
 
@@ -33,19 +34,16 @@ function protect(req, res, next) {
   }
 }
 
-// GET all listings with search and filter functionality
+// GET all listings
 router.get("/", function (req, res, next) {
   const { search, category } = req.query;
   let query = {};
-
   if (search) {
     query.title = { $regex: search, $options: "i" };
   }
-
   if (category && category !== "All") {
     query.category = category;
   }
-
   Listing.find(query)
     .populate("user", "name email")
     .sort({ createdAt: -1 })
@@ -57,7 +55,7 @@ router.get("/", function (req, res, next) {
     });
 });
 
-// GET listings for the logged-in user
+// GET user's listings
 router.get("/my-listings", protect, function (req, res, next) {
   Listing.find({ user: req.user.id })
     .populate("user", "name email")
@@ -70,25 +68,33 @@ router.get("/my-listings", protect, function (req, res, next) {
     });
 });
 
-// POST a new listing with an image using express-fileupload
+// GET a single listing by ID
+router.get("/:id", protect, function (req, res, next) {
+  Listing.findById(req.params.id)
+    .then(function (listing) {
+      if (!listing) {
+        return res.status(404).json({ msg: "Listing not found" });
+      }
+      res.json(listing);
+    })
+    .catch(function (err) {
+      res.status(500).send("Server Error");
+    });
+});
+
+// POST a new listing
 router.post("/", protect, function (req, res, next) {
   const { title, description, price, category } = req.body;
-
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).json({ msg: 'No image was uploaded.' });
   }
-
   const imageFile = req.files.image;
   const fileName = Date.now() + path.extname(imageFile.name);
   const uploadPath = path.join(__dirname, '..', 'public', 'images', fileName);
-
-  // Move the file to the public/images folder
   imageFile.mv(uploadPath, function (err) {
     if (err) {
       return res.status(500).send(err);
     }
-
-    // Create a new listing with the image path
     const newListing = new Listing({
       title,
       description,
@@ -97,20 +103,17 @@ router.post("/", protect, function (req, res, next) {
       image: '/images/' + fileName,
       user: req.user.id,
     });
-
-    newListing
-      .save()
-      .then(function (listing) {
-        res.status(201).json(listing);
-      })
-      .catch(function (err) {
-        res.status(500).send("Server Error");
-      });
+    newListing.save()
+      .then(listing => res.status(201).json(listing))
+      .catch(err => res.status(500).send("Server Error"));
   });
 });
 
 // PUT (update) a listing by its ID
 router.put("/:id", protect, function (req, res, next) {
+  const { title, description, price, category } = req.body;
+  const updatedData = { title, description, price, category };
+
   Listing.findById(req.params.id)
     .then(function (listing) {
       if (!listing) {
@@ -119,17 +122,28 @@ router.put("/:id", protect, function (req, res, next) {
       if (listing.user.toString() !== req.user.id) {
         return res.status(401).json({ msg: "User not authorized" });
       }
-      Listing.findByIdAndUpdate(req.params.id, req.body, { new: true })
-        .then(function (updatedListing) {
-          res.json(updatedListing);
-        })
-        .catch(function (err) {
-          res.status(500).send("Server Error");
+
+      if (req.files && req.files.image) {
+        const imageFile = req.files.image;
+        const newFileName = Date.now() + path.extname(imageFile.name);
+        const newUploadPath = path.join(__dirname, '..', 'public', 'images', newFileName);
+
+        const oldImagePath = path.join(__dirname, '..', 'public', listing.image);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+
+        imageFile.mv(newUploadPath, function (err) {
+          if (err) return res.status(500).send(err);
         });
+        updatedData.image = '/images/' + newFileName;
+      }
+
+      Listing.findByIdAndUpdate(req.params.id, updatedData, { new: true })
+        .then(updatedListing => res.json(updatedListing))
+        .catch(err => res.status(500).send("Server Error"));
     })
-    .catch(function (err) {
-      res.status(500).send("Server Error");
-    });
+    .catch(err => res.status(500).send("Server Error"));
 });
 
 // DELETE a listing by its ID
@@ -142,18 +156,15 @@ router.delete("/:id", protect, function (req, res, next) {
       if (listing.user.toString() !== req.user.id) {
         return res.status(401).json({ msg: "User not authorized" });
       }
-      listing
-        .deleteOne()
-        .then(function () {
-          res.json({ msg: "Listing removed successfully" });
-        })
-        .catch(function (err) {
-          res.status(500).send("Server Error");
-        });
+      const imagePath = path.join(__dirname, '..', 'public', listing.image);
+      listing.deleteOne().then(() => {
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+        }
+        res.json({ msg: "Listing removed successfully" });
+      }).catch(err => res.status(500).send("Server Error"));
     })
-    .catch(function (err) {
-      res.status(500).send("Server Error");
-    });
+    .catch(err => res.status(500).send("Server Error"));
 });
 
 module.exports = router;
