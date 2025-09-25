@@ -18,9 +18,30 @@ const createListing = (listingData, token) => {
     return axios.post(API_URL, listingData, config);
 };
 
+const getMyListings = (token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+    return axios.get(API_URL + 'my-listings', config);
+};
+
+const deleteListing = (listingId, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+    return axios.delete(API_URL + listingId, config);
+};
+
+
 const listingService = {
     getListings,
     createListing,
+    getMyListings,
+    deleteListing,
 };
 
 export default listingService;

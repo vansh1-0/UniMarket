@@ -57,6 +57,19 @@ router.get("/", function (req, res, next) {
     });
 });
 
+// GET listings for the logged-in user
+router.get("/my-listings", protect, function (req, res, next) {
+  Listing.find({ user: req.user.id })
+    .populate("user", "name email")
+    .sort({ createdAt: -1 })
+    .then(function (listings) {
+      res.json(listings);
+    })
+    .catch(function (err) {
+      res.status(500).send("Server Error");
+    });
+});
+
 // POST a new listing with an image using express-fileupload
 router.post("/", protect, function (req, res, next) {
   const { title, description, price, category } = req.body;
@@ -144,4 +157,3 @@ router.delete("/:id", protect, function (req, res, next) {
 });
 
 module.exports = router;
-
