@@ -8,7 +8,8 @@ import ProfilePage from './pages/ProfilePage';
 import MarketplacePage from './pages/MarketplacePage';
 import CreateListingPage from './pages/CreateListingPage';
 import MyListingsPage from './pages/MyListingsPage';
-import EditListingPage from './pages/EditListingPage'; // Import the new page
+import EditListingPage from './pages/EditListingPage';
+import WishlistPage from './pages/WishlistPage';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -38,6 +39,7 @@ function App() {
           {user ? (
             <>
               <Link to="/my-listings"><button>My Listings</button></Link>
+              <Link to="/wishlist"><button>Wishlist</button></Link>
               <Link to="/create-listing"><button>+ New Listing</button></Link>
               <Link to="/profile"><button>Profile</button></Link>
               <span onClick={handleLogout} style={{ cursor: 'pointer' }}>
@@ -60,6 +62,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage handleLogout={handleLogout} />} />
           <Route path="/my-listings" element={<MyListingsPage />} />
           <Route path="/edit-listing/:id" element={<EditListingPage />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
         </Routes>
       </main>
 

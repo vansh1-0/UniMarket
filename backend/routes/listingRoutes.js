@@ -2,11 +2,10 @@ var express = require("express");
 var router = express.Router();
 var jwt = require("jsonwebtoken");
 var path = require("path");
-var fs = require("fs"); // Import the File System module
+var fs = require("fs");
 var Listing = require("../models/listing.js");
 var User = require("../models/user.js");
 
-// Middleware to protect routes that require authentication
 function protect(req, res, next) {
   var token;
   if (
@@ -34,7 +33,6 @@ function protect(req, res, next) {
   }
 }
 
-// GET all listings
 router.get("/", function (req, res, next) {
   const { search, category } = req.query;
   let query = {};
@@ -45,7 +43,7 @@ router.get("/", function (req, res, next) {
     query.category = category;
   }
   Listing.find(query)
-    .populate("user", "name email")
+    .populate("user", "name email phone")
     .sort({ createdAt: -1 })
     .then(function (listings) {
       res.json(listings);
@@ -55,10 +53,9 @@ router.get("/", function (req, res, next) {
     });
 });
 
-// GET user's listings
 router.get("/my-listings", protect, function (req, res, next) {
   Listing.find({ user: req.user.id })
-    .populate("user", "name email")
+    .populate("user", "name email phone")
     .sort({ createdAt: -1 })
     .then(function (listings) {
       res.json(listings);
@@ -68,7 +65,6 @@ router.get("/my-listings", protect, function (req, res, next) {
     });
 });
 
-// GET a single listing by ID
 router.get("/:id", protect, function (req, res, next) {
   Listing.findById(req.params.id)
     .then(function (listing) {
@@ -82,7 +78,6 @@ router.get("/:id", protect, function (req, res, next) {
     });
 });
 
-// POST a new listing
 router.post("/", protect, function (req, res, next) {
   const { title, description, price, category } = req.body;
   if (!req.files || Object.keys(req.files).length === 0) {
@@ -109,7 +104,6 @@ router.post("/", protect, function (req, res, next) {
   });
 });
 
-// PUT (update) a listing by its ID
 router.put("/:id", protect, function (req, res, next) {
   const { title, description, price, category } = req.body;
   const updatedData = { title, description, price, category };
@@ -146,7 +140,6 @@ router.put("/:id", protect, function (req, res, next) {
     .catch(err => res.status(500).send("Server Error"));
 });
 
-// DELETE a listing by its ID
 router.delete("/:id", protect, function (req, res, next) {
   Listing.findById(req.params.id)
     .then(function (listing) {

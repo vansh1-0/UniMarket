@@ -1,7 +1,7 @@
 import React from 'react';
 import './ListingItem.css';
 
-function ListingItem({ listing, showDeleteButton, showEditButton, onDelete, onEdit }) {
+function ListingItem({ listing, showDeleteButton, showEditButton, onDelete, onEdit, onAddToWishlist, onRemoveFromWishlist, isWishlisted, showWishlistButton }) {
     const imageUrl = `http://localhost:5000${listing.image}`;
 
     return (
@@ -17,7 +17,20 @@ function ListingItem({ listing, showDeleteButton, showEditButton, onDelete, onEd
                 <p className="listing-price">₹{listing.price}</p>
                 <p className="listing-category">{listing.category}</p>
                 <p className="listing-seller">Sold by: {listing.user.name}</p>
+                <p className="listing-seller">Contact: {listing.user.phone}</p>
                 
+                {showWishlistButton && (
+                    isWishlisted ? (
+                        <button onClick={onRemoveFromWishlist} className="wishlist-button remove">
+                            Remove from Wishlist
+                        </button>
+                    ) : (
+                        <button onClick={onAddToWishlist} className="wishlist-button add">
+                            Add to Wishlist
+                        </button>
+                    )
+                )}
+
                 {showEditButton && (
                     <button onClick={onEdit} className="edit-button">
                         Edit

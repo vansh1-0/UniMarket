@@ -89,7 +89,7 @@ function CreateListingPage() {
                     <select id="category" name="category" value={category} onChange={onChange}>
                         <option value="Textbooks">Textbooks</option>
                         <option value="Electronics">Electronics</option>
-                        <option value="Furniture">Furniture</option>
+                        <option value="Stationary">Stationary</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
